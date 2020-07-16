@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.test">
+    <resultMap id="headerResultMap" type="com.mapper.model.TestHeader">
+        <constructor>
+            <idArg column="H_ID" javaType="_int" name="id"/>
+        </constructor>
+        <result property="field1" column="H_FIELD1"/>
+        <result property="field2" column="H_FIELD2"/>
+        <result property="field3" column="H_FIELD3"/>
+    </resultMap>
+
+    <resultMap id="detailResultMap" type="com.mapper.model.TestDetail">
+        <constructor>
+            <idArg column="D_ID" javaType="_int" name="id"/>
+            <idArg column="D_SEQ" javaType="_int" name="seq"/>
+        </constructor>
+        <result property="field1" column="D_FIELD1"/>
+        <result property="field2" column="D_FIELD2"/>
+        <result property="field3" column="D_FIELD3"/>
+    </resultMap>
+
+    <resultMap id="testResultMap" type="com.mapper.model.TestOrder">
+        <constructor>
+            <idArg resultMap="headerResultMap" javaType="com.mapper.model.TestHeader"/>
+        </constructor>
+        <collection property="details" ofType="com.mapper.model.TestDetail" resultMap="detailResultMap"/>
+    </resultMap>
+
+    <select id="find" resultMap="testResultMap">
+        SELECT
+            *
+        FROM (
+            SELECT
+                1 AS H_ID,
+                'H_VALUE1' AS H_FIELD1,
+                'H_VALUE2' AS H_FIELD2,
+                'H_VALUE3' AS H_FIELD3
+            FROM
+                DUAL
+        ) H
+        LEFT JOIN (
+            SELECT
+                1 AS D_ID,
+                1 AS D_SEQ,
+                'D_VALUE1' AS D_FIELD1,
+                'D_VALUE2' AS D_FIELD2,
+                'D_VALUE3' AS D_FIELD3
+            FROM
+                DUAL
+            UNION ALL
+            SELECT
+                1 AS D_ID,
+                2 AS D_SEQ,
+                'D_VALUE4' AS D_FIELD1,
+                'D_VALUE5' AS D_FIELD2,
+                'D_VALUE6' AS D_FIELD3
+            FROM
+                DUAL
+            UNION ALL
+            SELECT
+                1 AS D_ID,
+                3 AS D_SEQ,
+                'D_VALUE7' AS D_FIELD1,
+                'D_VALUE8' AS D_FIELD2,
+                'D_VALUE9' AS D_FIELD3
+            FROM
+                DUAL
+        ) D ON H.H_ID=D.D_ID
+    </select>
+</mapper>
