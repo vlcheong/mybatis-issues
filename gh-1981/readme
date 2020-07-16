@@ -1,0 +1,7 @@
+Compile
+> mvn clean compile
+
+Run Test
+> mvn test
+
+The test will fail for mybatis 3.5.5
